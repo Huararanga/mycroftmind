@@ -206,6 +206,20 @@
         }
       }
     },
+    "apimycroftmind": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": "https://s3.amazonaws.com/amplify-amplifyff21cf0e94b34-staging-122130-deployment/amplify-cfn-templates/api/cloudformation-template.json",
+        "Parameters": {
+          "AppSyncApiName": "mycroftmind",
+          "DynamoDBBillingMode": "PAY_PER_REQUEST",
+          "DynamoDBEnableServerSideEncryption": false,
+          "S3DeploymentBucket": "amplify-amplifyff21cf0e94b34-staging-122130-deployment",
+          "S3DeploymentRootKey": "amplify-appsync-files/eb70d9bdb29f454fff4766edd7d52f903dd8a725",
+          "env": "staging"
+        }
+      }
+    },
     "UpdateRolesWithIDPFunction": {
       "DependsOn": [
         "AuthRole",

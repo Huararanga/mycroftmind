@@ -42,7 +42,7 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-amplifyff21cf0e94b34-staging-122130-deployment/amplify-cfn-templates/auth/mycroftmindc5f3e179-cloudformation-template.json",
         "logicalId": "authmycroftmindc5f3e179"
       },
-      "lastPushTimeStamp": "2023-05-09T12:32:28.003Z",
+      "lastPushTimeStamp": "2023-05-09T13:52:42.059Z",
       "output": {
         "UserPoolId": "eu-central-1_OnBS2STgn",
         "AppClientIDWeb": "1jmdq8mdk7cukkds8ojbrnof7j",
@@ -53,6 +53,33 @@
         "UserPoolName": "mycroftmindc5f3e179_userpool_c5f3e179"
       },
       "lastPushDirHash": "6s5PaMxIrXnXissndLESUOlVTjw="
+    }
+  },
+  "api": {
+    "mycroftmind": {
+      "service": "AppSync",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "output": {
+        "authConfig": {
+          "defaultAuthentication": {
+            "authenticationType": "API_KEY",
+            "apiKeyConfig": {
+              "apiKeyExpirationDays": 7
+            }
+          },
+          "additionalAuthenticationProviders": []
+        },
+        "GraphQLAPIIdOutput": "vadwbjrqpnfibkn233b7gwo7ue",
+        "GraphQLAPIEndpointOutput": "https://6srruir4kvernadipr73ia2elm.appsync-api.eu-central-1.amazonaws.com/graphql",
+        "GraphQLAPIKeyOutput": "da2-einvwhhzabgb3jlip6lab7yyr4"
+      },
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-amplifyff21cf0e94b34-staging-122130-deployment/amplify-cfn-templates/api/cloudformation-template.json",
+        "logicalId": "apimycroftmind"
+      },
+      "lastPushTimeStamp": "2023-05-09T13:52:46.211Z",
+      "lastPushDirHash": "NpmCcKFsABHRsEVmD3MRI9eaook="
     }
   }
 }
