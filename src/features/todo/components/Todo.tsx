@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAppSelector, useAppDispatch } from "../../../app/hooks";
-import List from "@mui/material/List";
-import Divider from "@mui/material/Divider";
-import { Paper, Stack } from "@mui/material";
+import { Paper, Stack, Divider, List } from "@mui/material";
 
 import { TodoListItem } from "./TodoListItem";
 import { TodoAddInput } from "./TodoAddInput";
@@ -18,7 +16,8 @@ import {
   selectItems,
   selectStatus,
 } from "../redux/todoSlice";
-import { updateFinished, updateName } from "./utils";
+import { updateFinished, updateName, deleteFinished, finishAll } from "./utils";
+import { TodoBatchOperationBar } from "./TodoBatchOperationBar";
 
 export function Todo() {
   const dispatch = useAppDispatch();
@@ -27,7 +26,15 @@ export function Todo() {
   const status = useAppSelector(selectStatus);
 
   const [filter, setFilter] = useState<FinishedFilter>("all");
-  const filteredItems = useTodoFinishedFilter(apiItems, filter);
+  const visibleItems = useTodoFinishedFilter(apiItems, filter);
+
+  const deleteFinishedCallBack = apiItems.filter((item) => item.finished).length
+    ? () => deleteFinished(apiItems, dispatch)
+    : undefined;
+
+  const finishAllCallBack = visibleItems.filter((item) => !item.finished).length
+    ? () => finishAll(visibleItems, dispatch)
+    : undefined;
 
   useEffect(() => {
     dispatch(fetchTodos({}));
@@ -48,8 +55,14 @@ export function Todo() {
           />
         </Stack>
         <Divider />
+        <TodoBatchOperationBar
+          finishAllCallBack={finishAllCallBack}
+          deleteFinishedCallBack={deleteFinishedCallBack}
+        />
+        {(finishAllCallBack || deleteFinishedCallBack) ? <Divider /> : null}
+
         <List sx={{ padding: "1rem", paddingBottom: "1.5rem" }}>
-          {filteredItems.map(({ id, name, finished }) => (
+          {visibleItems.map(({ id, name, finished }) => (
             <TodoListItem
               key={id}
               id={id}

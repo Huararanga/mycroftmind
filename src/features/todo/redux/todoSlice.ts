@@ -5,7 +5,7 @@ import { GraphQLQuery } from "@aws-amplify/api";
 import { RootState } from "../../../app/store";
 import { serializeGraphQLError } from "../../../common/utils";
 import { listTodos } from "../../../graphql/queries";
-import { TodoModel, ListTodos, TodoValues, TodoId, TodoStatus } from "../types";
+import { TodoModel, ListTodos, TodoValues, TodoStatus, TodoBase } from "../types";
 import {
   createTodo as createTodoMutation,
   deleteTodo as deleteTodoMutation,
@@ -56,12 +56,9 @@ export const addTodo = createAsyncThunk(
 export const deleteTodo = createAsyncThunk(
   "todo/deleteTodo",
   async (id: string, { rejectWithValue, dispatch }) => {
-    const data = {
-      id,
-    };
     const apiData = await API.graphql<GraphQLQuery<{}>>({
       query: deleteTodoMutation,
-      variables: { input: data },
+      variables: { input: { id } },
     });
     if (apiData.errors) {
       return rejectWithValue(serializeGraphQLError(apiData.errors));
@@ -70,16 +67,52 @@ export const deleteTodo = createAsyncThunk(
   }
 );
 
+export const deleteTodoBatch = createAsyncThunk(
+  "todo/deleteTodoBatch",
+  async (ids: string[], { rejectWithValue, dispatch }) => {
+    for (let i = 0; i < ids.length; i++) {
+      const id = ids[i];
+      const apiData = await API.graphql<GraphQLQuery<{}>>({
+        query: deleteTodoMutation,
+        variables: { input: { id } },
+      });
+      if (apiData.errors) {
+        return rejectWithValue(serializeGraphQLError(apiData.errors));
+      }
+    }
+    return dispatch(fetchTodos(null));
+  }
+);
+
 export const updateTodo = createAsyncThunk(
   "todo/updateTodo",
-  async (update: TodoValues & TodoId, { rejectWithValue, dispatch }) => {
-    console.log('update')
+  async (update: TodoBase, { rejectWithValue, dispatch }) => {
     const apiData = await API.graphql<GraphQLQuery<{}>>({
       query: updateTodoMutation,
       variables: { input: update },
     });
     if (apiData.errors) {
       return rejectWithValue(serializeGraphQLError(apiData.errors));
+    }
+    return dispatch(fetchTodos(null));
+  }
+);
+
+export const updateTodoBatch = createAsyncThunk(
+  "todo/updateTodoBatch",
+  async (
+    updateItems: TodoBase[],
+    { rejectWithValue, dispatch }
+  ) => {
+    for (let i = 0; i < updateItems.length; i++) {
+      const update = updateItems[i];
+      const apiData = await API.graphql<GraphQLQuery<{}>>({
+        query: updateTodoMutation,
+        variables: { input: update },
+      });
+      if (apiData.errors) {
+        return rejectWithValue(serializeGraphQLError(apiData.errors));
+      }
     }
     return dispatch(fetchTodos(null));
   }
@@ -101,37 +134,18 @@ export const todoSlice = createSlice({
       })
       .addCase(fetchTodos.rejected, (state) => {
         state.status = "failed";
-      })
-      // addTodo
-      .addCase(addTodo.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(addTodo.fulfilled, (state, action) => {
-        state.status = "idle";
-      })
-      .addCase(addTodo.rejected, (state) => {
-        state.status = "failed";
-      })
-      // deleteTodo
-      .addCase(deleteTodo.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(deleteTodo.fulfilled, (state, action) => {
-        state.status = "idle";
-      })
-      .addCase(deleteTodo.rejected, (state) => {
-        state.status = "failed";
-      })
-      // updateTodo
-      .addCase(updateTodo.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(updateTodo.fulfilled, (state, action) => {
-        state.status = "idle";
-      })
-      .addCase(updateTodo.rejected, (state) => {
-        state.status = "failed";
       });
+      [addTodo, deleteTodo, deleteTodoBatch, updateTodo, updateTodoBatch].forEach((thunk) => {
+        builder.addCase(thunk.pending, (state) => {
+          state.status = "loading";
+        })
+        builder.addCase(thunk.fulfilled, (state) => {
+          state.status = "idle";
+        })
+        builder.addCase(thunk.rejected, (state) => {
+          state.status = "failed";
+        })
+      })
   },
 });
 

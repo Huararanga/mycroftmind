@@ -7,11 +7,11 @@ export type TodoEditInputProps = {
 };
 
 export const TodoEditInput = ({ name, onSubmit }: TodoEditInputProps) => {
-  const [inputContent, setInputContent] = useState("");
+  const [inputContent, setInputContent] = useState(name);
 
   return (
     <TextField
-      defaultValue={name}
+      defaultValue={inputContent}
       variant="standard"
       fullWidth
       onChange={(event) => setInputContent(event.target.value)}

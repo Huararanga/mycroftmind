@@ -7,12 +7,13 @@ export type TodoValues = {
   finished: boolean;
 };
 
-export type TodoModel = TodoValues &
-  TodoId & {
-    id: string;
-    createdAt: string;
-    updatedAt: string;
-  };
+export type TodoBase = TodoId & TodoValues;
+
+export type TodoModel = TodoBase & {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+};
 
 export type ListTodos = {
   listTodos: {

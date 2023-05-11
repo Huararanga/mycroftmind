@@ -29,7 +29,7 @@ export const TodoAddInput = ({ onSubmit }: TodoAddInputProps) => {
                     color="primary"
                     onClick={() => onSubmit(inputContent)}
                 >
-                  <AddIcon fontSize="large"/>
+                  <AddIcon />
                 </IconButton>
               </InputAdornment>
             ),

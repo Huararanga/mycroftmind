@@ -3,6 +3,20 @@ import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 import { FinishedFilter, TodoStatus } from "../types";
 import { FilterButton } from "./FilterButton";
+import { Typography } from "@mui/material";
+import CircleIcon from "@mui/icons-material/Circle";
+
+function getStatusColor(status: TodoStatus) {
+  switch (status) {
+    case "loading":
+      return "primary.main";
+    case "failed":
+      return "error.main";
+    case "idle":
+    default:
+      return "success.main";
+  }
+}
 
 export type TodoBarProps = {
   status: TodoStatus;
@@ -22,9 +36,11 @@ export function TodoBar({
       direction="row"
       justifyContent="space-between"
       alignItems="center"
-      paddingX='1rem'      
+      paddingX="1rem"
     >
-      <Box>{`${activeCount} items left`}</Box>
+      <Box>
+        <Typography>{`${activeCount} items left`}</Typography>
+      </Box>
       <Stack direction="row" spacing={1}>
         <FilterButton
           currentFilter={currentFilter}
@@ -45,7 +61,7 @@ export function TodoBar({
           onFilterSelect={onFilterSelect}
         />
       </Stack>
-      <Box width="3rem" textAlign="end">{status}</Box>
+      <CircleIcon fontSize="small" sx={{ color: getStatusColor(status) }} />
     </Stack>
   );
 }
